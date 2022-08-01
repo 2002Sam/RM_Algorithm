@@ -21,7 +21,7 @@
  	 cv::findContours(_maxColor, allContours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);//找轮廓
 
   #### 3.find the proper lightbar:
-  request: > long side/shortside is in a range
+  request:  long side/shortside is in a range
   area is in a range 
   hight/width is in a range
 
