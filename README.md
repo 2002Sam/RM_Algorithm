@@ -2,7 +2,7 @@
 ## Armor identification
 ***
   ### using traditional way to recognize Armor:
-  #### 1.img preprocessing ;
+  #### 1.img preprocessing 
       using channel substraction to avoid identify the color:
       ```C++
       cv::subtract(channels[2], channels[0], _seperationSrcBlue);
