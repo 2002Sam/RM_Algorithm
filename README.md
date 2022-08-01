@@ -5,35 +5,34 @@
   #### 1.img preprocessing:
   using channel substraction to avoid identify the color:
       
-      ```C++
+      ```
       cv::subtract(channels[2], channels[0], _seperationSrcBlue);
       cv::subtract(channels[0], channels[2], _seperationSrcRed);
       ```
       
   use & to mix different pictures
-       ```C++
+       ```
       _maxColor = _seperationSrcRed & _graySrc;
 		cv::bitwise_not(_maxColor, _maxColor);
 		_maxColor = white_binary & _maxColor;
      ```
      
   #### 2.find the lightbar:
-  ```C++
+  ```
   cv::findContours(_maxColor, allContours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);//找轮廓
   ```
   #### 3.find the proper lightbar:
   request: > long side/shortside is in a range
            area is in a range 
 	   hight/width is in a range
-	  ```C++
-	  //draw_(_src, lightRect, cv::Scalar(0, 0, 0));
+	  ```
 			if (lightContoursArea < _para.minLightBarArea || lightContoursArea > _para.maxLightBarArea) 
 			{/* std::cout << lightContoursArea << std::endl;*/ continue; }
 			//cv::RotatedRect lightRect = cv::fitEllipse(contours);
 			if (lightRect_par.br().y - lightRect_par.tl().y > (lightRect_par.br().x - lightRect_par.tl().x) * 10.0f ||
 				lightRect_par.br().y - lightRect_par.tl().y < (lightRect_par.br().x - lightRect_par.tl().x) * 1.5f)
 				continue;
-	                      ```
+	  ```
 	
 #### 4.conbine the lightbars together:
 	size1/size2 is in a range 
