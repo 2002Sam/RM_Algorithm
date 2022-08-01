@@ -37,6 +37,12 @@
 	
 #### 5.put the lightbar into a structure named armorstructs
 
-          
+        ArmorStruct armorStruct;
+	armorStruct.armor = Util::boundArmor(possibleRect[i], possibleRect[j]);
+	armorStruct.lightBars[0] = possibleRect[i].center.x - possibleRect[j].center.x > 0 ? possibleRect[j] : possibleRect[i];//左边的bar
+	armorStruct.lightBars[1] = possibleRect[i].center.x - possibleRect[j].center.x > 0 ? possibleRect[i] : possibleRect[j];
+	armorStruct.barNum1 = possibleRect[i].center.x - possibleRect[j].center.x > 0 ? j : i;
+	armorStruct.barNum2 = possibleRect[i].center.x - possibleRect[j].center.x > 0 ? i : j;
+	armorStructs.push_back(armorStruct);//填入vector
   
 
