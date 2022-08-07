@@ -1,3 +1,4 @@
+#把.pth文件转换为.pt文件
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
