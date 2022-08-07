@@ -1,3 +1,4 @@
+#基于MNIST修改的自定义Dataset
 from PIL import Image
 import torch
 import xml.etree.ElementTree as ET
