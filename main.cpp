@@ -5,9 +5,9 @@ ArmorDistinguish armorDistinguish;
 int main()
 {
 #ifdef PIC
-	cv::Mat src = cv::imread(ArmorDistinguish::getPath() + "1.png", 1);
+	cv::Mat src = cv::imread(ArmorDistinguish::getPath() + "1.jpg", 1);
 	armorDistinguish.process(src);
-	
+	cv::waitKey(0);
 #endif
 
 #ifdef VIDEO
@@ -37,3 +37,7 @@ int main()
 	cv::waitKey();
 #endif
 }
+
+
+	//std::shared_ptr<Detector> detector = std::make_shared<Detector>("C:/Users/86133/Desktop/mode_9.pt", true);//÷«ƒ‹÷∏’Î
+

@@ -1,12 +1,13 @@
 #include"armorDetection.h"
-
+//#define ROI
 //#define DEBUG
 #define USE_GUIDIAN     //比较适用于较暗环境
-
+#define PIC
 void ArmorDistinguish::imagePreprogress(const cv::Mat& src, EnemyColor enimycolor)
 {
 	//ROI
-	const cv::Point& lastResult = _resLast.center;
+#ifdef ROI
+const cv::Point& lastResult = _resLast.center;
 	if (lastResult.x == 0 || lastResult.y == 0)
 	{
 		_src = src;
@@ -26,7 +27,9 @@ void ArmorDistinguish::imagePreprogress(const cv::Mat& src, EnemyColor enimycolo
 		restoreRect = cv::Rect(lt, rb);
 		src(restoreRect).copyTo(_src);
 	}
+#endif // ROI
 
+	_src = src;
 	cv::split(_src, channels);
 	cv::cvtColor(_src, _graySrc, cv::COLOR_BGR2GRAY);
 	cv::threshold(_graySrc, white_binary, 140, 255, cv::THRESH_BINARY);
@@ -103,13 +106,13 @@ ArmorDistinguish::ArmorDistinguish()
 }
 
 cv::Mat ArmorDistinguish::process(const cv::Mat& src)
-{
+{	//改变亮度，在较暗环境下可不用
 	//srcBright = changeBright(src);
 	imagePreprogress(src, enimyColor);
 	//cv::imshow("原图像", src);
 	findLightBarContour();
 	lightBarFilter();
-
+	
 #ifdef DEBUG
 #ifdef USE_GUIDIAN  _seperationSrcRed & _graySrc & white_binary;
 
@@ -143,10 +146,12 @@ cv::Mat ArmorDistinguish::process(const cv::Mat& src)
 	cv::imshow("_seperationSrcRed", _seperationSrcRed);
 	cv::namedWindow("_graySrc", 0);
 	cv::imshow("_graySrc", _graySrc);*/
+
 	return _src;
 }
 
-void ArmorDistinguish::findLightBarContour()//找发光体轮廓
+//找发光体轮廓
+void ArmorDistinguish::findLightBarContour()
 {
 	cv::findContours(_maxColor, allContours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);//找轮廓
 
@@ -196,6 +201,7 @@ void ArmorDistinguish::findLightBarContour()//找发光体轮廓
 	}
 }
 
+//匹配灯条
 void ArmorDistinguish::lightBarFilter()
 {
 	std::vector<ArmorStruct> armorStructs;
@@ -294,6 +300,18 @@ void ArmorDistinguish::lightBarFilter()
 	{
 		for (int i = 0; i < armorStructs.size(); i++)
 		{
+			cv::RotatedRect big_Arm = cv::RotatedRect(armorStructs[i].armor.center, cv::Size(armorStructs[i].armor.size.width,armorStructs[i].armor.size.height*2.0f), armorStructs[i].armor.angle);
+			cv::Mat src_num = _src(big_Arm.boundingRect());
+			cv::cvtColor(src_num, src_num, cv::COLOR_BGR2GRAY);
+			//cv::imshow("src_num", src_num);
+			//std::shared_ptr<Detector> detector = std::make_shared<Detector>("C:/Users/86133/Desktop/mode_9.pt", true);//智能指针
+			Detector det = Detector("C:/Users/86133/Desktop/new2.pt", true);
+			int num = det.Run(src_num);
+			armorStructs[i].carNum = num;
+		}
+		for (int i = 0; i < armorStructs.size(); i++)
+		{	
+			//画出armorStructs
 			draw_(_src, armorStructs[i].lightBars[0], cv::Scalar(0, 255, 255));
 			draw_(_src, armorStructs[i].lightBars[1], cv::Scalar(0, 255, 255));
 			draw_(_src, armorStructs[i].armor, cv::Scalar(255, 255, 0));

@@ -9,6 +9,7 @@
 #include<vector>
 #include"Conf.h"
 #include"PointUtil.h"
+#include"NumberDistinguish.h"
 
 
 class ArmorDistinguish
